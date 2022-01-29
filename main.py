@@ -29,6 +29,12 @@ class Stock:
             self.__free_length = length
             self.__cuts = []
 
+    def copy(self):
+        new = Stock()
+        new.__free_length = self.__free_length
+        new.__cuts = self.__cuts.copy()
+        return new
+
     def add(self, length):
         if self.__free_length >= length:
             self.__free_length -= length
@@ -51,12 +57,6 @@ class Stock:
             return True
         except:
             return False
-
-    def copy(self):
-        new = Stock()
-        new.__free_length = self.__free_length
-        new.__cuts = self.__cuts.copy()
-        return new
 
     def __str__(self):
         return ' '.join(map(str, self.__cuts)) + '\n'
@@ -110,23 +110,21 @@ class Answer:
     def __str__(self):
         return 'Number of Stocks: ' + str(self.stocks_count()) + '\n' + 'Stocks:\n' + ''.join(map(str, self.__stocks)) + '\n'
 
+    def __repr__(self):
+        return self.__str__()
+
 
 # Read length and requests from input file
-NUM = 4
+NUM = 5
 IO.init(NUM)
 raw_input = IO.read()
 
 length = int(re.findall(r'Stock Length:\s*(\d+)', raw_input)[0])
 requests = list(map(int, re.findall(r'Requests:((\s*\d+,)*\s*(\d+)?)', raw_input)[0][0].split(',')))
 
-
 # Run the Simulated Annealing
 start = time.time()
-
-
-def TEMPERATURE(iteration, chaos): return .99 ** (iteration / 100) * chaos
-
-
+TEMPERATURE = lambda iteration, chaos: .99 ** (iteration / 100) * chaos
 MUTATION_DEGREE = 5
 STAGNANCY_THRESHOLD = 5000
 CHAOS_DEGREE = .1
@@ -143,7 +141,7 @@ while True:
     iteration += 1
     new = current.mutate(MUTATION_DEGREE)
     delta = new.stocks_count() - current.stocks_count()
-    if delta < 0 or random.random() < math.exp(-delta/temperature):
+    if delta < 0 or random.random() < math.exp(-delta / temperature):
         current = new
 
     if last.stocks_count() == current.stocks_count():
@@ -158,7 +156,6 @@ while True:
 
     if current.stocks_count() < best.stocks_count():
         best = current
-
 
 IO.print()
 IO.print(best, True)
