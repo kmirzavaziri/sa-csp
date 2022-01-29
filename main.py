@@ -112,7 +112,7 @@ class Answer:
 
 
 # Read length and requests from input file
-NUM = 2
+NUM = 3
 IO.init(NUM)
 raw_input = IO.read()
 
