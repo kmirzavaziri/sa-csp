@@ -112,7 +112,7 @@ class Answer:
 
 
 # Read length and requests from input file
-NUM = 1
+NUM = 2
 IO.init(NUM)
 raw_input = IO.read()
 
@@ -127,8 +127,9 @@ start = time.time()
 def TEMPERATURE(iteration, chaos): return .99 ** (iteration / 100) * chaos
 
 
-MUTATION_DEGREE = 20
+MUTATION_DEGREE = 5
 STAGNANCY_THRESHOLD = 5000
+CHAOS_DEGREE = .1
 
 stagnancy = 0
 current = Answer(length, requests)
@@ -147,9 +148,10 @@ while True:
 
     if last.stocks_count() == current.stocks_count():
         stagnancy += 1
-        chaos += .01
+        chaos += CHAOS_DEGREE
     else:
         stagnancy = 0
+        chaos = 1
     if stagnancy > STAGNANCY_THRESHOLD:
         break
     last = current
